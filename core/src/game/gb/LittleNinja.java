@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class LittleNinja extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private Texture img;
-	private TextureRegion region;
 	
 	@Override
 	public void create () {
