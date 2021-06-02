@@ -7,12 +7,13 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import game.gb.base.BaseScreen;
 
 public class MenuScreen extends BaseScreen {
+    private static final float V_LENGTH = 1.5f;
     private final int ballSize = 100;
-    private final int velocity = 200;
     private Texture img;
     private Vector2 position;
     private Vector2 targetPosition;
     private Vector2 moveOffset;
+    private Vector2 tmp;
 
     @Override
     public void show() {
@@ -21,31 +22,25 @@ public class MenuScreen extends BaseScreen {
         position = new Vector2();
         targetPosition = new Vector2();
         moveOffset = new Vector2();
+        tmp = new Vector2();
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
 
-        if (!targetPosition.epsilonEquals(position)) {
-            Vector2 newPosition = position.cpy().mulAdd(moveOffset, delta * velocity);
-            if (position.x < newPosition.x) {
-                newPosition.x = Math.min(newPosition.x, targetPosition.x);
-            } else {
-                newPosition.x = Math.max(newPosition.x, targetPosition.x);
-            }
-            if (position.y < newPosition.y) {
-                newPosition.y = Math.min(newPosition.y, targetPosition.y);
-            } else {
-                newPosition.y = Math.max(newPosition.y, targetPosition.y);
-            }
-            position = newPosition;
-        }
-
         ScreenUtils.clear(1, 1, 1, 1);
         batch.begin();
         batch.draw(img, position.x, position.y, ballSize, ballSize);
         batch.end();
+        tmp.set(targetPosition);
+        if(tmp.sub(position).len() <= moveOffset.len()) {
+            position.set(targetPosition);
+            moveOffset.setZero();
+        } else {
+            position.add(moveOffset);
+        }
+
     }
 
     @Override
@@ -57,7 +52,7 @@ public class MenuScreen extends BaseScreen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         targetPosition.set(screenX - ballSize / 2, Gdx.graphics.getHeight() - screenY - ballSize / 2);
-        moveOffset = targetPosition.cpy().sub(position).nor();
-        return super.touchDown(screenX, screenY, pointer, button);
+        moveOffset.set(targetPosition.cpy().sub(position).setLength(V_LENGTH));
+        return false;
     }
 }
