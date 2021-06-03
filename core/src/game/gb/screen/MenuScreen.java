@@ -8,7 +8,7 @@ import game.gb.base.BaseScreen;
 
 public class MenuScreen extends BaseScreen {
     private static final float V_LENGTH = 1.5f;
-    private final int ballSize = 100;
+    private final float ballSize = 0.3f;
     private Texture img;
     private Vector2 position;
     private Vector2 targetPosition;
@@ -20,7 +20,7 @@ public class MenuScreen extends BaseScreen {
         super.show();
         img = new Texture("ball.png");
         position = new Vector2();
-        targetPosition = new Vector2();
+        targetPosition = new Vector2(0.5f, 0.5f);
         moveOffset = new Vector2();
         tmp = new Vector2();
     }
