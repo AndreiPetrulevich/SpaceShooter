@@ -4,60 +4,57 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.sun.org.apache.bcel.internal.generic.BALOAD;
 import game.gb.base.BaseScreen;
+import game.gb.math.Rect;
+import game.gb.sprite.Background;
+import game.gb.sprite.Ball;
 
 public class MenuScreen extends BaseScreen {
-    private final int ballSize = 100;
-    private final int velocity = 200;
-    private Texture img;
-    private Vector2 position;
-    private Vector2 targetPosition;
-    private Vector2 moveOffset;
+
+    private Texture bg;
+    private Texture logo;
+    private Background background;
+    private Ball ball;
 
     @Override
     public void show() {
         super.show();
-        img = new Texture("ball.png");
-        position = new Vector2();
-        targetPosition = new Vector2();
-        moveOffset = new Vector2();
+        bg = new Texture("textures/bg.png");
+        logo = new Texture("ball.png");
+        background = new Background(bg);
+        ball = new Ball(logo);
+    }
+
+    @Override
+    public void resize(Rect worldBounds) {
+        super.resize(worldBounds);
+        background.resize(worldBounds);
+        ball.resize(worldBounds);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-
-        if (!targetPosition.epsilonEquals(position)) {
-            Vector2 newPosition = position.cpy().mulAdd(moveOffset, delta * velocity);
-            if (position.x < newPosition.x) {
-                newPosition.x = Math.min(newPosition.x, targetPosition.x);
-            } else {
-                newPosition.x = Math.max(newPosition.x, targetPosition.x);
-            }
-            if (position.y < newPosition.y) {
-                newPosition.y = Math.min(newPosition.y, targetPosition.y);
-            } else {
-                newPosition.y = Math.max(newPosition.y, targetPosition.y);
-            }
-            position = newPosition;
-        }
+        ball.update(delta);
 
         ScreenUtils.clear(1, 1, 1, 1);
         batch.begin();
-        batch.draw(img, position.x, position.y, ballSize, ballSize);
+        background.draw(batch);
+        ball.draw(batch);
         batch.end();
     }
 
     @Override
     public void dispose() {
         super.dispose();
-        img.dispose();
+        bg.dispose();
+        logo.dispose();
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        targetPosition.set(screenX - ballSize / 2, Gdx.graphics.getHeight() - screenY - ballSize / 2);
-        moveOffset = targetPosition.cpy().sub(position).nor();
-        return super.touchDown(screenX, screenY, pointer, button);
+    public boolean touchDown(Vector2 targetPosition, int pointer, int button) {
+        ball.touchDown(targetPosition, pointer, button);
+        return false;
     }
 }
