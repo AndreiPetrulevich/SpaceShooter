@@ -9,7 +9,7 @@ import game.gb.screen.GameScreen;
 public class PlayButton extends ScaledButton {
 
     private static final float HEIGHT = 0.135f;
-    private static final float PUDDING = 0.02f;
+    private static final float PADDING = 0.02f;
 
     private final Game game;
 
@@ -22,8 +22,8 @@ public class PlayButton extends ScaledButton {
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         setHeightProportion(HEIGHT);
-        setBottom(worldBounds.getBottom() + PUDDING);
-        setLeft(worldBounds.getLeft() + PUDDING);
+        setBottom(worldBounds.getBottom() + PADDING);
+        setLeft(worldBounds.getLeft() + PADDING);
     }
 
     @Override
