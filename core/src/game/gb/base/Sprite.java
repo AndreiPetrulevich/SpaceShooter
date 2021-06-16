@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import game.gb.math.Rect;
+import game.gb.utils.Regions;
 
 public class Sprite extends Rect {
 
@@ -15,6 +16,19 @@ public class Sprite extends Rect {
     public Sprite(TextureRegion region) {
         regions = new TextureRegion[1];
         regions[0] = region;
+    }
+
+    public Sprite(TextureRegion region, int x, int y, int width, int height, int frames) {
+        regions = new TextureRegion[1];
+        regions[0] = region;
+        for (int i = 0; i <= regions.length; i++) {
+            regions[i].setRegion(x, y, width / frames, height);
+            return;
+        }
+    }
+
+    public Sprite(TextureRegion region, int rows, int cols, int frames) {
+        regions = Regions.split(region, rows, cols, frames);
     }
 
     public void update(float delta) {
