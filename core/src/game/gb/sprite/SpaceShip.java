@@ -1,10 +1,14 @@
 package game.gb.sprite;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import game.gb.base.Sprite;
 import game.gb.math.Rect;
+import game.gb.pool.BulletPool;
 
 public class SpaceShip extends Sprite {
 
@@ -13,7 +17,7 @@ public class SpaceShip extends Sprite {
     private static final int NOT_VALID_POINTER = -1;
 
     private final Vector2 INITIAL_VELOCITY = new Vector2(0.5f, 0);
-    private Vector2 velocity = new Vector2();
+    private final Vector2 velocity = new Vector2();
 
     private boolean isPressedLeft;
     private boolean isPressedRight;
@@ -21,12 +25,22 @@ public class SpaceShip extends Sprite {
     private int leftPointer = NOT_VALID_POINTER;
     private int rightPointer = NOT_VALID_POINTER;
 
-
     private Rect worldBounds;
+    private BulletPool bulletPool;
+    private TextureRegion bulletRegion;
+    private Vector2 bulletVelocity;
+    private Vector2 bulletPosition;
 
-    public SpaceShip(TextureAtlas atlas) {
+    private Sound bulletSound;
+
+    public SpaceShip(TextureAtlas atlas, BulletPool bulletPool) {
         //super(atlas.findRegion("main_ship"), 916, 95, 390, 287, 2);
         super(atlas.findRegion("main_ship"), 1, 2, 2);
+        this.bulletPool = bulletPool;
+        this.bulletRegion = atlas.findRegion("bulletMainShip");
+        this.bulletVelocity = new Vector2(0, 0.5f);
+        this.bulletPosition = new Vector2();
+        this.bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
     }
 
     @Override
@@ -101,6 +115,10 @@ public class SpaceShip extends Sprite {
                 isPressedRight = true;
                 moveRight();
                 break;
+            case Input.Keys.UP:
+                shoot();
+                bulletSound.play(0.1f);
+                break;
         }
         return false;
     }
@@ -139,5 +157,11 @@ public class SpaceShip extends Sprite {
 
     private void stop() {
         velocity.setZero();
+    }
+
+    private void shoot() {
+        Bullet bullet = bulletPool.obtain();
+        bulletPosition.set(position.x, position.y + getHalfHeight());
+        bullet.set(this, bulletRegion, bulletPosition, bulletVelocity, worldBounds, 1, 0.01f);
     }
 }
