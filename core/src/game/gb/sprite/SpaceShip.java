@@ -15,6 +15,7 @@ public class SpaceShip extends Sprite {
     private static final float HEIGHT = 0.15f;
     private static final float PADDING = 0.03f;
     private static final int NOT_VALID_POINTER = -1;
+    private static final float RELOAD_TIME = 0.2f;
 
     private final Vector2 INITIAL_VELOCITY = new Vector2(0.5f, 0);
     private final Vector2 velocity = new Vector2();
@@ -32,6 +33,7 @@ public class SpaceShip extends Sprite {
     private Vector2 bulletPosition;
 
     private Sound bulletSound;
+    private float timer;
 
     public SpaceShip(TextureAtlas atlas, BulletPool bulletPool) {
         //super(atlas.findRegion("main_ship"), 916, 95, 390, 287, 2);
@@ -53,6 +55,12 @@ public class SpaceShip extends Sprite {
     @Override
     public void update(float delta) {
         position.mulAdd(velocity, delta);
+        timer += delta;
+        if (timer >= RELOAD_TIME) {
+            timer = 0;
+            shoot();
+            bulletSound.play(0.05f);
+        }
         if (getRight() > worldBounds.getRight()) {
             setRight(worldBounds.getRight());
             stop();
@@ -115,10 +123,10 @@ public class SpaceShip extends Sprite {
                 isPressedRight = true;
                 moveRight();
                 break;
-            case Input.Keys.UP:
+            /*case Input.Keys.UP:
                 shoot();
                 bulletSound.play(0.1f);
-                break;
+                break;*/
         }
         return false;
     }
