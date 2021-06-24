@@ -35,14 +35,14 @@ public class SpaceShip extends Sprite {
     private Sound bulletSound;
     private float timer;
 
-    public SpaceShip(TextureAtlas atlas, BulletPool bulletPool) {
+    public SpaceShip(TextureAtlas atlas, BulletPool bulletPool, Sound bulletSound) {
         //super(atlas.findRegion("main_ship"), 916, 95, 390, 287, 2);
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
         this.bulletRegion = atlas.findRegion("bulletMainShip");
         this.bulletVelocity = new Vector2(0, 0.5f);
         this.bulletPosition = new Vector2();
-        this.bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
+        this.bulletSound = bulletSound;
     }
 
     @Override
@@ -59,7 +59,6 @@ public class SpaceShip extends Sprite {
         if (timer >= RELOAD_TIME) {
             timer = 0;
             shoot();
-            bulletSound.play(0.05f);
         }
         if (getRight() > worldBounds.getRight()) {
             setRight(worldBounds.getRight());
@@ -171,5 +170,6 @@ public class SpaceShip extends Sprite {
         Bullet bullet = bulletPool.obtain();
         bulletPosition.set(position.x, position.y + getHalfHeight());
         bullet.set(this, bulletRegion, bulletPosition, bulletVelocity, worldBounds, 1, 0.01f);
+        bulletSound.play(0.05f);
     }
 }

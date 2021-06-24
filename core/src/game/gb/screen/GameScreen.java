@@ -1,6 +1,7 @@
 package game.gb.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -22,9 +23,10 @@ public class GameScreen extends BaseScreen {
     private Star[] stars;
     private Background background;
     private SpaceShip spaceShip;
-    private BulletPool bullePool;
+    private BulletPool bulletPool;
 
-    private final Sound backgroundMusic = Gdx.audio.newSound(Gdx.files.internal("sounds/backgroundMusic.mp3"));
+    private final Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/backgroundMusic.mp3"));
+    private final Sound bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
 
 
     @Override
@@ -37,10 +39,10 @@ public class GameScreen extends BaseScreen {
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
-        bullePool = new BulletPool();
-        spaceShip = new SpaceShip(atlas, bullePool);
-        long id = backgroundMusic.play(0.1f);
-        backgroundMusic.setLooping(id, true);
+        bulletPool = new BulletPool();
+        spaceShip = new SpaceShip(atlas, bulletPool, bulletSound);
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
     }
 
     @Override
@@ -65,8 +67,9 @@ public class GameScreen extends BaseScreen {
         super.dispose();
         bg.dispose();
         atlas.dispose();
-        bullePool.dispose();
+        bulletPool.dispose();
         backgroundMusic.dispose();
+        bulletSound.dispose();
     }
 
     private void update(float delta) {
@@ -74,7 +77,7 @@ public class GameScreen extends BaseScreen {
             star.update(delta);
         }
         spaceShip.update(delta);
-        bullePool.updateActiveSprites(delta);
+        bulletPool.updateActiveSprites(delta);
     }
 
     private void draw() {
@@ -85,12 +88,12 @@ public class GameScreen extends BaseScreen {
             star.draw(batch);
         }
         spaceShip.draw(batch);
-        bullePool.drawActiveSprites(batch);
+        bulletPool.drawActiveSprites(batch);
         batch.end();
     }
 
     private void freeAllDestroyed() {
-        bullePool.freeAllDestroyed();
+        bulletPool.freeAllDestroyed();
     }
 
     @Override
