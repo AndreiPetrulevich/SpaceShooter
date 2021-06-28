@@ -1,11 +1,15 @@
 package game.gb.screen;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import game.gb.base.BaseScreen;
 import game.gb.math.Rect;
+import game.gb.pool.BulletPool;
 import game.gb.sprite.Background;
 import game.gb.sprite.SpaceShip;
 import game.gb.sprite.Star;
@@ -19,6 +23,11 @@ public class GameScreen extends BaseScreen {
     private Star[] stars;
     private Background background;
     private SpaceShip spaceShip;
+    private BulletPool bulletPool;
+
+    private final Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/backgroundMusic.mp3"));
+    private final Sound bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
+
 
     @Override
     public void show() {
@@ -30,12 +39,16 @@ public class GameScreen extends BaseScreen {
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
-        spaceShip = new SpaceShip(atlas);
+        bulletPool = new BulletPool();
+        spaceShip = new SpaceShip(atlas, bulletPool, bulletSound);
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
     }
 
     @Override
     public void render(float delta) {
         update(delta);
+        freeAllDestroyed();
         draw();
     }
 
@@ -54,6 +67,9 @@ public class GameScreen extends BaseScreen {
         super.dispose();
         bg.dispose();
         atlas.dispose();
+        bulletPool.dispose();
+        backgroundMusic.dispose();
+        bulletSound.dispose();
     }
 
     private void update(float delta) {
@@ -61,6 +77,7 @@ public class GameScreen extends BaseScreen {
             star.update(delta);
         }
         spaceShip.update(delta);
+        bulletPool.updateActiveSprites(delta);
     }
 
     private void draw() {
@@ -71,7 +88,12 @@ public class GameScreen extends BaseScreen {
             star.draw(batch);
         }
         spaceShip.draw(batch);
+        bulletPool.drawActiveSprites(batch);
         batch.end();
+    }
+
+    private void freeAllDestroyed() {
+        bulletPool.freeAllDestroyed();
     }
 
     @Override
@@ -97,4 +119,5 @@ public class GameScreen extends BaseScreen {
         spaceShip.touchUp(targetPosition, pointer, button);
         return false;
     }
+
 }
