@@ -92,7 +92,7 @@ public class Sprite extends Rect {
         isDestroyed = true;
     }
 
-    public void flushDestoy() {
+    public void flushDestroy() {
         isDestroyed = false;
     }
 }
