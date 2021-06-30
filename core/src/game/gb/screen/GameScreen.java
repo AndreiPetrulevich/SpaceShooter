@@ -11,10 +11,7 @@ import game.gb.base.BaseScreen;
 import game.gb.math.Rect;
 import game.gb.pool.BulletPool;
 import game.gb.pool.EnemyPool;
-import game.gb.sprite.Background;
-import game.gb.sprite.EnemyShip;
-import game.gb.sprite.SpaceShip;
-import game.gb.sprite.Star;
+import game.gb.sprite.*;
 import game.gb.utils.EnemyEmitter;
 
 import java.util.List;
@@ -72,6 +69,19 @@ public class GameScreen extends BaseScreen {
             }
             if (!enemyShip.isOutside(spaceShip)) {
                 enemyShip.destroy();
+            }
+        }
+
+        List<Bullet> bulletList = bulletPool.getActiveObjects();
+        for (Bullet bullet : bulletList) {
+            if (bullet.isDestroyed()) {
+                continue;
+            }
+            for (EnemyShip enemyShip : enemyShipList) {
+                if (!bullet.isOutside(enemyShip)) {
+                    enemyShip.destroy();
+                    bullet.destroy();
+                }
             }
         }
     }
