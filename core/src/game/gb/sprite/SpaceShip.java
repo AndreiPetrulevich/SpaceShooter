@@ -6,34 +6,23 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import game.gb.base.Ship;
 import game.gb.base.Sprite;
 import game.gb.math.Rect;
 import game.gb.pool.BulletPool;
 
-public class SpaceShip extends Sprite {
+public class SpaceShip extends Ship {
 
     private static final float HEIGHT = 0.15f;
     private static final float PADDING = 0.03f;
     private static final int NOT_VALID_POINTER = -1;
     private static final float RELOAD_TIME = 0.2f;
 
-    private final Vector2 INITIAL_VELOCITY = new Vector2(0.5f, 0);
-    private final Vector2 velocity = new Vector2();
-
     private boolean isPressedLeft;
     private boolean isPressedRight;
 
     private int leftPointer = NOT_VALID_POINTER;
     private int rightPointer = NOT_VALID_POINTER;
-
-    private Rect worldBounds;
-    private BulletPool bulletPool;
-    private TextureRegion bulletRegion;
-    private Vector2 bulletVelocity;
-    private Vector2 bulletPosition;
-
-    private Sound bulletSound;
-    private float timer;
 
     public SpaceShip(TextureAtlas atlas, BulletPool bulletPool, Sound bulletSound) {
         //super(atlas.findRegion("main_ship"), 916, 95, 390, 287, 2);
@@ -43,6 +32,12 @@ public class SpaceShip extends Sprite {
         this.bulletVelocity = new Vector2(0, 0.5f);
         this.bulletPosition = new Vector2();
         this.bulletSound = bulletSound;
+        initialVelocity = new Vector2(0.5f, 0);
+        velocity = new Vector2();
+        reloadTime = RELOAD_TIME;
+        bulletHeight = 0.01f;
+        damage = 1;
+        hp = 10;
     }
 
     @Override
@@ -54,12 +49,8 @@ public class SpaceShip extends Sprite {
 
     @Override
     public void update(float delta) {
-        position.mulAdd(velocity, delta);
-        timer += delta;
-        if (timer >= RELOAD_TIME) {
-            timer = 0;
-            shoot();
-        }
+        super.update(delta);
+        bulletPosition.set(position.x, position.y + getHalfHeight());
         if (getRight() > worldBounds.getRight()) {
             setRight(worldBounds.getRight());
             stop();
@@ -155,21 +146,15 @@ public class SpaceShip extends Sprite {
     }
 
     private void moveRight() {
-        velocity.set(INITIAL_VELOCITY);
+        velocity.set(initialVelocity);
     }
 
     private void moveLeft() {
-        velocity.set(INITIAL_VELOCITY).rotateDeg(180);
+        velocity.set(initialVelocity).rotateDeg(180);
     }
 
     private void stop() {
         velocity.setZero();
     }
 
-    private void shoot() {
-        Bullet bullet = bulletPool.obtain();
-        bulletPosition.set(position.x, position.y + getHalfHeight());
-        bullet.set(this, bulletRegion, bulletPosition, bulletVelocity, worldBounds, 1, 0.01f);
-        bulletSound.play(0.05f);
-    }
 }
