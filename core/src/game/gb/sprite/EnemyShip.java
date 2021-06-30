@@ -26,7 +26,7 @@ public class EnemyShip extends Ship {
         if (getTop() < worldBounds.getTop()) {
             velocity.set(initialVelocity);
         } else {
-            reloadTime = timer * 0.8f;
+            timer *= 0.8f;
         }
         if (worldBounds.isOutside(this)) {
             destroy();
