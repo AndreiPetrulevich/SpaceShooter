@@ -40,6 +40,10 @@ public class Ship extends Sprite{
         super(region, rows, cols, frames);
     }
 
+    public void setBulletPosition(Vector2 bulletPosition) {
+        this.bulletPosition.set(bulletPosition);
+    }
+
     @Override
     public void update(float delta) {
         position.mulAdd(velocity, delta);
