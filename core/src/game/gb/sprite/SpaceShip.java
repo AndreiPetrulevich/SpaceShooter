@@ -10,8 +10,11 @@ import game.gb.base.Ship;
 import game.gb.base.Sprite;
 import game.gb.math.Rect;
 import game.gb.pool.BulletPool;
+import game.gb.pool.ExplosionPool;
 
 public class SpaceShip extends Ship {
+
+    private static final int HP = 30;
 
     private static final float HEIGHT = 0.15f;
     private static final float PADDING = 0.03f;
@@ -24,9 +27,10 @@ public class SpaceShip extends Ship {
     private int leftPointer = NOT_VALID_POINTER;
     private int rightPointer = NOT_VALID_POINTER;
 
-    public SpaceShip(TextureAtlas atlas, BulletPool bulletPool, Sound bulletSound) {
+    public SpaceShip(TextureAtlas atlas, ExplosionPool explosionPool, BulletPool bulletPool, Sound bulletSound) {
         //super(atlas.findRegion("main_ship"), 916, 95, 390, 287, 2);
         super(atlas.findRegion("main_ship"), 1, 2, 2);
+        this.explosionPool = explosionPool;
         this.bulletPool = bulletPool;
         this.bulletRegion = atlas.findRegion("bulletMainShip");
         this.bulletVelocity = new Vector2(0, 0.5f);
@@ -37,7 +41,17 @@ public class SpaceShip extends Ship {
         reloadTime = RELOAD_TIME;
         bulletHeight = 0.01f;
         damage = 1;
-        hp = 10;
+        hp = HP;
+    }
+
+    public void newGameStart() {
+        this.hp = HP;
+        this.position.x = worldBounds.position.x;
+        stop();
+        isPressedRight = false;
+        isPressedLeft = false;
+        rightPointer = NOT_VALID_POINTER;
+        leftPointer = NOT_VALID_POINTER;
     }
 
     @Override
@@ -59,6 +73,13 @@ public class SpaceShip extends Ship {
             setLeft(worldBounds.getLeft());
             stop();
         }
+    }
+
+    public boolean isBulletCollision(Rect bullet) {
+        return !(bullet.getRight() < getLeft()
+                || bullet.getLeft() > getRight()
+                || bullet.getBottom() > position.y
+                || bullet.getTop() < getBottom());
     }
 
     @Override
