@@ -65,7 +65,7 @@ public class GameScreen extends BaseScreen {
         backgroundMusic.play();
         state = State.PLAYING;
         gameOver = new GameOver(atlas);
-        newGame = new NewGame(atlas);
+        newGame = new NewGame(atlas, this);
     }
 
     @Override
@@ -218,5 +218,12 @@ public class GameScreen extends BaseScreen {
             newGame.touchUp(targetPosition, pointer, button);
         }
         return false;
+    }
+
+    public void newGameStart() {
+        spaceShip.newGameStart();
+        bulletPool.freeAllActiveObjects();
+        enemyPool.freeAllActiveObjects();
+        explosionPool.freeAllActiveObjects();
     }
 }

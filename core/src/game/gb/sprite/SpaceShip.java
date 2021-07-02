@@ -14,6 +14,8 @@ import game.gb.pool.ExplosionPool;
 
 public class SpaceShip extends Ship {
 
+    private static final int HP = 30;
+
     private static final float HEIGHT = 0.15f;
     private static final float PADDING = 0.03f;
     private static final int NOT_VALID_POINTER = -1;
@@ -39,7 +41,17 @@ public class SpaceShip extends Ship {
         reloadTime = RELOAD_TIME;
         bulletHeight = 0.01f;
         damage = 1;
-        hp = 30;
+        hp = HP;
+    }
+
+    public void newGameStart() {
+        this.hp = HP;
+        this.position.x = worldBounds.position.x;
+        stop();
+        isPressedRight = false;
+        isPressedLeft = false;
+        rightPointer = NOT_VALID_POINTER;
+        leftPointer = NOT_VALID_POINTER;
     }
 
     @Override
