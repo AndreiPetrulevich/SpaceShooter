@@ -225,5 +225,6 @@ public class GameScreen extends BaseScreen {
         bulletPool.freeAllActiveObjects();
         enemyPool.freeAllActiveObjects();
         explosionPool.freeAllActiveObjects();
+        state = State.PLAYING;
     }
 }

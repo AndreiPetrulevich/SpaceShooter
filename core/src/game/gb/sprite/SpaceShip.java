@@ -52,6 +52,7 @@ public class SpaceShip extends Ship {
         isPressedLeft = false;
         rightPointer = NOT_VALID_POINTER;
         leftPointer = NOT_VALID_POINTER;
+        flushDestroy();
     }
 
     @Override
