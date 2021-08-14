@@ -63,10 +63,6 @@ public class GameScreen extends BaseScreen {
         bg = new Texture("textures/bg.png");
         background = new Background(bg);
         atlas = new TextureAtlas("textures/mainAtlas.tpack");
-        stars = new Star[STAR_COUNT];
-        for (int i = 0; i < stars.length; i++) {
-            stars[i] = new Star(atlas);
-        }
         bulletPool = new BulletPool();
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
         explosionPool = new ExplosionPool(atlas, explosionSound);
@@ -74,6 +70,10 @@ public class GameScreen extends BaseScreen {
         enemyPool = new EnemyPool(worldBounds, explosionPool, bulletPool, bulletSound);
         spaceShip = new SpaceShip(atlas, explosionPool, bulletPool, laserSound);
         enemyEmitter = new EnemyEmitter(worldBounds, enemyPool, atlas);
+        stars = new TrackingStar[STAR_COUNT];
+        for (int i = 0; i < stars.length; i++) {
+            stars[i] = new TrackingStar(atlas, spaceShip.getVelocity());
+        }
         font = new Font("fonts/font.fnt", "fonts/Font.png");
         font.setSize(FONT_SIZE);
         sbFrags = new StringBuilder();

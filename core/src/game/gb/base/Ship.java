@@ -48,6 +48,10 @@ public class Ship extends Sprite{
         return hp;
     }
 
+    public Vector2 getVelocity() {
+        return velocity;
+    }
+
     @Override
     public void update(float delta) {
         position.mulAdd(velocity, delta);

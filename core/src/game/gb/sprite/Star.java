@@ -8,7 +8,7 @@ import game.gb.math.Rnd;
 
 public class Star extends Sprite {
 
-    private Vector2 moveOffset;
+    protected Vector2 moveOffset;
     private Rect worldBounds;
 
     public Star(TextureAtlas atlas) {
@@ -24,20 +24,8 @@ public class Star extends Sprite {
     public void update(float delta) {
         super.update(delta);
         position.mulAdd(moveOffset, delta);
-        if (getRight() < worldBounds.getLeft()) {
-            setLeft(worldBounds.getRight());
-        }
-        if (getLeft() > worldBounds.getRight()) {
-            setRight(worldBounds.getLeft());
-        }
-        if (getTop() < worldBounds.getBottom()) {
-            setBottom(worldBounds.getTop());
-        }
-        if (getBottom() > worldBounds.getTop()) {
-            setTop(worldBounds.getBottom());
-        }
-
-        flicker();
+        checkBounds();
+        flicker(delta);
     }
 
     @Override
@@ -50,12 +38,27 @@ public class Star extends Sprite {
         position.set(x, y);
     }
 
-    public void flicker() {
+    protected void flicker(float delta) {
         float height = getHeight();
         height += 0.0001f;
         if (height >= 0.012f) {
             height = 0.008f;
         }
         setHeightProportion(height);
+    }
+
+    protected void checkBounds() {
+        if (getRight() < worldBounds.getLeft()) {
+            setLeft(worldBounds.getRight());
+        }
+        if (getLeft() > worldBounds.getRight()) {
+            setRight(worldBounds.getLeft());
+        }
+        if (getTop() < worldBounds.getBottom()) {
+            setBottom(worldBounds.getTop());
+        }
+        if (getBottom() > worldBounds.getTop()) {
+            setTop(worldBounds.getBottom());
+        }
     }
 }
