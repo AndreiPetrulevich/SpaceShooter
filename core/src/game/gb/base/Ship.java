@@ -44,6 +44,10 @@ public class Ship extends Sprite{
         this.bulletPosition.set(bulletPosition);
     }
 
+    public int getHp() {
+        return hp;
+    }
+
     @Override
     public void update(float delta) {
         position.mulAdd(velocity, delta);

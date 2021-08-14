@@ -48,6 +48,9 @@ public class EnemyEmitter {
     private final Rect worldBounds;
     private final EnemyPool enemyPool;
 
+    private int level = 1;
+
+
     public EnemyEmitter(Rect worldBounds, EnemyPool enemyPool, TextureAtlas atlas) {
         this.enemyPool = enemyPool;
         this.bulletRegion = atlas.findRegion("bulletEnemy");
@@ -60,7 +63,12 @@ public class EnemyEmitter {
         bigEnemyVelocity = new Vector2(0, -0.01f);
     }
 
-    public void generate (float delta) {
+    public int getLevel() {
+        return level;
+    }
+
+    public void generate (float delta, int frags) {
+        level = frags / 10 + 1;
         generateTimer += delta;
         if (generateTimer >= GENERATE_INTERVAL) {
             generateTimer = 0f;
@@ -73,7 +81,7 @@ public class EnemyEmitter {
                         bulletRegion,
                         SMALL_ENEMY_BULLET_HEIGHT,
                         SMALL_ENEMY_BULLET_VY,
-                        SMALL_ENEMY_DAMAGE,
+                        SMALL_ENEMY_DAMAGE * level,
                         SMALL_ENEMY_RELOAD_TIME,
                         SMALL_ENEMY_HEIGHT,
                         SMALL_ENEMY_HP
@@ -85,7 +93,7 @@ public class EnemyEmitter {
                         bulletRegion,
                         MEDIUM_ENEMY_BULLET_HEIGHT,
                         MEDIUM_ENEMY_BULLET_VY,
-                        MEDIUM_ENEMY_DAMAGE,
+                        MEDIUM_ENEMY_DAMAGE * level,
                         MEDIUM_ENEMY_RELOAD_TIME,
                         MEDIUM_ENEMY_HEIGHT,
                         MEDIUM_ENEMY_HP
@@ -97,7 +105,7 @@ public class EnemyEmitter {
                         bulletRegion,
                         BIG_ENEMY_BULLET_HEIGHT,
                         BIG_ENEMY_BULLET_VY,
-                        BIG_ENEMY_DAMAGE,
+                        BIG_ENEMY_DAMAGE * level,
                         BIG_ENEMY_RELOAD_TIME,
                         BIG_ENEMY_HEIGHT,
                         BIG_ENEMY_HP
@@ -109,5 +117,9 @@ public class EnemyEmitter {
             enemyShip.setBottom(worldBounds.getTop());
             enemyShip.setBulletPosition(enemyShip.position);
         }
+
+
+
     }
+
 }
